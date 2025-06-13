@@ -4,45 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class FrontController extends Controller
+class CartController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('home.index');
+        return view('cart.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function about()
+    public function checkout()
     {
-        return view('home.about');
-    }
-
-    public function support()
-    {
-        return view('home.support');
-    }
-
-    public function refer()
-    {
-        return view('home.refer');
-    }
-
-    public function talk()
-    {
-        return view('home.talk');
+        return view('cart.checkout');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function search(Request $request)
+    public function store(Request $request)
     {
-        return view('home.search');
+        //
     }
 
     /**
