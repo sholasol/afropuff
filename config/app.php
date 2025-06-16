@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'ckeditor' => env('CKEDITOR_ENABLED', true),
+
 ];

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Builder::macro('withAllRelations', function() {
+        //     return $this->with(['categories', 'tags', 'images', 'variants']);
+        // });
     }
 }
