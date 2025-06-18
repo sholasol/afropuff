@@ -8,6 +8,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="../assets/css/admin.css" rel="stylesheet">
+    <!-- Quill stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body>
     <div class="admin-wrapper">
@@ -25,6 +27,18 @@
                     <a href="{{route('dashboard')}}" class="nav-link active">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('categories')}}" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{route('tags')}}" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>Tags</span>
                     </a>
                 </li>
                 <li class="nav-item">

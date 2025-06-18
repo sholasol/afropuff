@@ -7,7 +7,7 @@
                     <h1 class="page-title">Shop Collection</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
                             <li class="breadcrumb-item active">Shop</li>
                         </ol>
                     </nav>
@@ -99,17 +99,24 @@
 
                     <!-- Products Grid -->
                     <div class="row g-4">
-                        <!-- Product 1 -->
+                        @foreach ($products as $product)
                         <div class="col-lg-4 col-md-6">
                             <div class="product-card">
                                 <div class="product-image-wrapper">
-                                    <img src="/placeholder.svg?height=200&width=200" alt="Dark Menthol" class="product-img">
+                                    <a href="{{ route('singleProduct', ['product' => $product])}}">
+                                    <img src="{{ $product->featuredImage ? asset('storage/' . $product->featuredImage)  : 'https://cdn.pixabay.com/photo/2018/12/03/03/20/uwell-3852654_1280.jpg'}}"
+                                            alt="{{$product->name}}" class="product-img">
+                                    </a>
                                     <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                                    <span class="product-tag">Menthol</span>
+                                    {{-- <span class="product-tag">{{$product->name}}</span> --}}
                                 </div>
                                 <div class="product-info">
-                                    <h5 class="product-name">Dark Menthol</h5>
-                                    <div class="product-price">$12.99</div>
+                                    <h5 class="product-name">
+                                        <a class="singlePord" href="{{ route('singleProduct', ['product' => $product])}}">
+                                            {{$product->name}}
+                                        </a>
+                                    </h5>
+                                    <div class="product-price">${{$product->regular_price}}</div>
                                     <div class="product-actions">
                                         <button class="btn btn-orange btn-sm">Add to Cart</button>
                                         <button class="btn btn-outline-light btn-sm">
@@ -119,127 +126,15 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Product 2 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="product-card">
-                                <div class="product-image-wrapper">
-                                    <img src="/placeholder.svg?height=200&width=200" alt="Mixed Fruits" class="product-img">
-                                    <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                                    <span class="product-tag">Fruity</span>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name">Mixed Fruits</h5>
-                                    <div class="product-price">$14.99</div>
-                                    <div class="product-actions">
-                                        <button class="btn btn-orange btn-sm">Add to Cart</button>
-                                        <button class="btn btn-outline-light btn-sm">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product 3 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="product-card">
-                                <div class="product-image-wrapper">
-                                    <img src="/placeholder.svg?height=200&width=200" alt="Blushed Mango" class="product-img">
-                                    <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                                    <span class="product-tag">Tropical</span>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name">Blushed Mango</h5>
-                                    <div class="product-price">$13.99</div>
-                                    <div class="product-actions">
-                                        <button class="btn btn-orange btn-sm">Add to Cart</button>
-                                        <button class="btn btn-outline-light btn-sm">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product 4 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="product-card">
-                                <div class="product-image-wrapper">
-                                    <img src="/placeholder.svg?height=200&width=200" alt="Vanilla Dream" class="product-img">
-                                    <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                                    <span class="product-tag">Dessert</span>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name">Vanilla Dream</h5>
-                                    <div class="product-price">$16.99</div>
-                                    <div class="product-actions">
-                                        <button class="btn btn-orange btn-sm">Add to Cart</button>
-                                        <button class="btn btn-outline-light btn-sm">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product 5 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="product-card">
-                                <div class="product-image-wrapper">
-                                    <img src="/placeholder.svg?height=200&width=200" alt="Berry Blast" class="product-img">
-                                    <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                                    <span class="product-tag">Fruity</span>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name">Berry Blast</h5>
-                                    <div class="product-price">$15.99</div>
-                                    <div class="product-actions">
-                                        <button class="btn btn-orange btn-sm">Add to Cart</button>
-                                        <button class="btn btn-outline-light btn-sm">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Product 6 -->
-                        <div class="col-lg-4 col-md-6">
-                            <div class="product-card">
-                                <div class="product-image-wrapper">
-                                    <img src="/placeholder.svg?height=200&width=200" alt="Cool Mint" class="product-img">
-                                    <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                                    <span class="product-tag">Menthol</span>
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name">Cool Mint</h5>
-                                    <div class="product-price">$11.99</div>
-                                    <div class="product-actions">
-                                        <button class="btn btn-orange btn-sm">Add to Cart</button>
-                                        <button class="btn btn-outline-light btn-sm">
-                                            <i class="far fa-heart"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
+                       
                     </div>
 
                     <!-- Pagination -->
-                    <nav class="mt-5">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1">Previous</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div class="mt-4">
+                        {{ $products->links() }}
+                    </div>
+                   
                 </div>
             </div>
         </div>

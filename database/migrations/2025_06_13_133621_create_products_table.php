@@ -32,11 +32,12 @@ return new class extends Migration
             $table->decimal('height', 8, 2)->nullable();
             $table->string('shipping_class')->nullable();
             $table->boolean('has_variants')->default(false);
-            $table->enum('status', ['published', 'draft', 'pending'])->default('draft');
+            $table->enum('status', ['published', 'draft', 'pending'])->default('published');
             $table->enum('visibility', ['public', 'private', 'password-protected'])->default('public');
             $table->string('password')->nullable();
             $table->timestamp('publish_date')->nullable();
             $table->string('video_url')->nullable();
+            $table->string('featuredImage')->nullable();
             $table->timestamps();
         });
 

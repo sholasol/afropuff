@@ -32,7 +32,8 @@ class Product extends Model
         'visibility',
         'password',
         'publish_date',
-        'video_url'
+        'video_url',
+        'featuredImage'
     ];
 
     protected $casts = [

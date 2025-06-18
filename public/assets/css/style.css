@@ -54,6 +54,10 @@ h6 {
   color: var(--blue) !important;
 }
 
+.singlePord{
+  text-decoration: none;
+  color: #fff;
+}
 /* Buttons */
 .btn-orange {
   background-color: var(--orange);

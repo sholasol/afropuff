@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class FrontController extends Controller
@@ -11,7 +12,9 @@ class FrontController extends Controller
      */
     public function index()
     {
-        return view('home.index');
+        $products = Product::with(['categories', 'tags', 'featuredImage'])->get();
+
+        return view('home.index', ['products' => $products]);
     }
 
     /**
@@ -48,9 +51,9 @@ class FrontController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Product $product)
     {
-        //
+        
     }
 
     /**

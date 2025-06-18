@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontController::class, 'index'])->name('home');
@@ -21,7 +23,7 @@ Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 
 //shop
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::get('/product', [ShopController::class, 'singleProduct'])->name('product');
+Route::get('/product/{product}', [ShopController::class, 'singleProduct'])->name('singleProduct');
 
 
 
@@ -34,11 +36,27 @@ Route::middleware('auth')->group(function () {
 
     //products
     Route::get('/products', [ProductController::class, 'index'])->name('products');
-    Route::get('/storeProduct', [ProductController::class, 'store'])->name('storeProduct');
+    Route::get('/galery/{product}', [ProductController::class, 'gallery'])->name('productGallery');
+    Route::post('/storeProduct', [ProductController::class, 'store'])->name('storeProduct');
     Route::get('/addProduct', [ProductController::class, 'create'])->name('addProduct');
-    Route::get('/editProduct', [ProductController::class, 'show'])->name('editProduct');
+    Route::get('/editProduct/{product}', [ProductController::class, 'show'])->name('editProduct');
+    Route::post('/updateProduct', [ProductController::class, 'update'])->name('updateProduct');
+    Route::delete('/products/bulk-delete', [ProductController::class, 'bulkDelete'])->name('products.bulkDelete');
+    Route::get('/products/{product}', [ProductController::class, 'destroy'])->name('deleteProduct');
 
-    
+    // Route::post('createCategory', [CategoryController::class, 'store'])->name('createCategory');
+
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('createCategory');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('updateCategory');
+    Route::get('/categories/{category}', [CategoryController::class, 'destroy'])->name('deleteCategory');
+
+    //tags
+    Route::get('/tags', [TagController::class, 'index'])->name('tags');
+    Route::post('/tags', [TagController::class, 'store'])->name('createTag');
+    Route::put('/tags/{tag}', [TagController::class, 'update'])->name('updateTag');
+    Route::get('/tags/{tag}', [TagController::class, 'destroy'])->name('deleteTag');
+
 
     //order
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');

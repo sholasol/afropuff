@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
@@ -11,15 +12,28 @@ class ShopController extends Controller
      */
     public function index()
     {
-        return view('shop.index');
+        $products = Product::with(['categories', 'tags','images', 'variants' ])
+                ->inRandomOrder()
+                ->paginate(16);
+        return view('shop.index', ['products' => $products]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function singleProduct()
+    public function singleProduct(Product $product)
     {
-        return view('shop.product');
+        $product = Product::with(['categories', 'tags','images', 'variants' ])
+                ->where('id', $product->id)->first();
+        
+               
+
+        $prods = Product::with(['categories', 'tags','images', 'variants' ])
+                ->inRandomOrder()
+                ->limit(4)
+                ->get();
+
+        return view('shop.product', ['product' =>$product, 'prods' => $prods]);
     }
 
     /**

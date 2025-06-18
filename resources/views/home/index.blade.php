@@ -44,66 +44,33 @@
                 <h2 class="section-title">Most Popular Flavours</h2>
             </div>
             <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card">
-                        <div class="product-image-wrapper">
-                            <img src="https://cdn.pixabay.com/photo/2018/12/03/03/20/uwell-3852654_1280.jpg"
-                                alt="Dark Menthol" class="product-img">
-                            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                        </div>
-                        <div class="product-info">
-                            <h5 class="product-name">Dark Menthol</h5>
-                            <span class="product-flavor">Menthol</span>
-                            <div class="product-price">$12.99</div>
-                            <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card">
-                        <div class="product-image-wrapper">
-                            <img src="https://cdn.pixabay.com/photo/2018/05/21/04/40/vape-3417374_1280.jpg"
-                                alt="Mixed Fruits" class="product-img">
-                            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                        </div>
-                        <div class="product-info">
-                            <h5 class="product-name">Mixed Fruits</h5>
-                            <span class="product-flavor">Fruity</span>
-                            <div class="product-price">$14.99</div>
-                            <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
+                @foreach ($products as $product)
+                    <div class="col-lg-3 col-md-6">
+                        <div class="product-card">
+                            <div class="product-image-wrapper">
+                                <a href="{{ route('singleProduct', ['product' => $product])}}">
+                                <img src="{{ $product->featuredImage ? asset('storage/' . $product->featuredImage)  : 'https://cdn.pixabay.com/photo/2018/12/03/03/20/uwell-3852654_1280.jpg'}}"
+                                    alt="{{$product->name}}" class="product-img">
+                                </a>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                            </div>
+                            <div class="product-info">
+                                <h5 class="product-name">
+                                    <a class="singlePord" href="{{ route('singleProduct', ['product' => $product])}}">
+                                        {{$product->name}}
+                                    </a>
+                                </h5>
+                                <span class="product-flavor">
+                                    @foreach ($product->tags as $tag)
+                                        {{$tag->name.', '}}
+                                    @endforeach
+                                </span>
+                                <div class="product-price">${{$product->regular_price}}</div>
+                                <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card">
-                        <div class="product-image-wrapper">
-                            <img src="https://cdn.pixabay.com/photo/2020/02/01/18/13/vape-4811030_1280.jpg"
-                                alt="Blushed Mango" class="product-img">
-                            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                        </div>
-                        <div class="product-info">
-                            <h5 class="product-name">Blushed Mango</h5>
-                            <span class="product-flavor">Tropical</span>
-                            <div class="product-price">$13.99</div>
-                            <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card">
-                        <div class="product-image-wrapper">
-                            <img src="https://cdn.pixabay.com/photo/2016/04/01/21/39/e-cigarette-1301664_1280.jpg"
-                                alt="Fruit Fields" class="product-img">
-                            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
-                        </div>
-                        <div class="product-info">
-                            <h5 class="product-name">Fruit Fields</h5>
-                            <span class="product-flavor">Mixed</span>
-                            <div class="product-price">$15.99</div>
-                            <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
