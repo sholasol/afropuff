@@ -19,6 +19,11 @@ Route::get('/talk', [FrontController::class, 'talk'])->name('talk');
 Route::get('/search', [FrontController::class, 'search'])->name('search');
 //cart
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::get('/store-cart/{id}', [CartController::class, 'storeCart'])->name('storeCart');
+Route::post('/cart/update/{id}', [CartController::class, 'updateCartQuantity'])->name('updateCartQuantity');
+Route::get('/cart/remove/{id}', [CartController::class, 'deleteFromCart'])->name('deleteItem');
+Route::get('/cart/clear', [CartController::class, 'clearCart'])->name('clearCart');
+
 Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 
 //shop

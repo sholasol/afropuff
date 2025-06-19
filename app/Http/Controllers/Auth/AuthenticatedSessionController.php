@@ -28,7 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        if($user->role == 'CUS'){
+            noty()->success('Login successful.');
+            return redirect()->intended(route('home', absolute: false));
+        }else{
+            noty()->success('Login successful.');
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
+
+        
     }
 
     /**

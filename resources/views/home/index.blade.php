@@ -1,4 +1,5 @@
 <x-front-layout>
+   
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -66,7 +67,7 @@
                                     @endforeach
                                 </span>
                                 <div class="product-price">${{$product->regular_price}}</div>
-                                <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
+                                <a href="{{ route('storeCart', $product->id)}}" class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</a>
                             </div>
                         </div>
                     </div>

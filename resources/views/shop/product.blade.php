@@ -95,9 +95,9 @@
                                </div>
                            </div>
                            <div class="action-buttons">
-                               <button class="btn btn-orange btn-lg me-3">
+                               <a href="{{ route('storeCart', $product->id)}}" class="btn btn-orange btn-lg me-3">
                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                               </button>
+                               </a>
                                <button class="btn btn-outline-light btn-lg">
                                    <i class="far fa-heart me-2"></i>Add to Wishlist
                                </button>
@@ -162,7 +162,7 @@
                                 </a>
                             </h5>
                             <div class="product-price">${{$prod->regular_price}}</div>
-                            <button class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</button>
+                            <a href="{{ route('storeCart', $prod->id)}}" class="btn btn-orange btn-sm w-100 mt-2">Add to Cart</a>
                         </div>
                     </div>
                 </div>

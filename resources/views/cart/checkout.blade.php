@@ -143,43 +143,48 @@
                         
                         <!-- Order Items -->
                         <div class="order-items mb-4">
+                            @php
+                                $total = 0;
+                                $gtotal = 0;
+                                $subtotal = 0;
+                                $qty = 0;
+                                $taxRate = 0.08;
+                                $tax = 0.0;
+                                $cartItems = session('cart', []);
+                            @endphp
+
+                            @if(session('cart'))
+
+                            @foreach (session('cart') as $id => $details)
+                            @php
+                               $total += $details['price'] * $details['quantity'];
+                               $qty += $details['quantity'];
+
+                               $tax = $taxRate * $total;
+                               $gtotal = $total + $tax;
+                           @endphp
                             <div class="order-item">
                                 <div class="d-flex align-items-center">
-                                    <img src="/placeholder.svg?height=50&width=50" alt="Dark Menthol" class="me-3 rounded">
+                                    <img src="{{ $details['image'] ? asset('storage/' . $details['image'])  : 'https://cdn.pixabay.com/photo/2018/12/03/03/20/uwell-3852654_1280.jpg'}}"
+                                    alt="{{ $details['name']}}" width="50" height="50" class="me-3 rounded">
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0">Dark Menthol</h6>
-                                        <small class="text-muted">Qty: 2</small>
+                                        <h6 class="mb-0">{{ $details['name']}}</h6>
+                                        <small class="text-muted">Qty: {{ $details['quantity']}}</small>
                                     </div>
-                                    <span class="fw-bold">$25.98</span>
+                                    <span class="fw-bold">${{ $details['price']}}</span>
                                 </div>
                             </div>
-                            <div class="order-item">
-                                <div class="d-flex align-items-center">
-                                    <img src="/placeholder.svg?height=50&width=50" alt="Mixed Fruits" class="me-3 rounded">
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0">Mixed Fruits</h6>
-                                        <small class="text-muted">Qty: 1</small>
-                                    </div>
-                                    <span class="fw-bold">$14.99</span>
-                                </div>
-                            </div>
-                            <div class="order-item">
-                                <div class="d-flex align-items-center">
-                                    <img src="/placeholder.svg?height=50&width=50" alt="Blushed Mango" class="me-3 rounded">
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0">Blushed Mango</h6>
-                                        <small class="text-muted">Qty: 1</small>
-                                    </div>
-                                    <span class="fw-bold">$13.99</span>
-                                </div>
-                            </div>
+                            @endforeach
+
+                            @endif
+
                         </div>
 
                         <!-- Order Totals -->
                         <div class="order-totals">
                             <div class="summary-item">
                                 <span>Subtotal</span>
-                                <span>$54.96</span>
+                                <span>${{$total}}</span>
                             </div>
                             <div class="summary-item">
                                 <span>Shipping</span>
@@ -187,12 +192,12 @@
                             </div>
                             <div class="summary-item">
                                 <span>Tax</span>
-                                <span>$4.40</span>
+                                <span>${{$tax}}</span>
                             </div>
                             <hr>
                             <div class="summary-total">
                                 <span class="fw-bold">Total</span>
-                                <span class="fw-bold text-orange">$59.36</span>
+                                <span class="fw-bold text-orange">$ {{$gtotal}}</span>
                             </div>
                         </div>
 

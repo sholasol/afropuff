@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Afropuff - Premium E-cigarettes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -45,9 +46,20 @@
                     <a href="{{ route('search')}}" class="text-white me-3"><i class="fas fa-search"></i></a>
                     <a href="{{ route('cart')}}" class="text-white position-relative">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="badge bg-orange position-absolute top-0 start-100 translate-middle">3</span>
+                        <span class="badge bg-orange position-absolute top-0 start-100 translate-middle">
+                            {{ count((array) session('cart')) }}
+                        </span>
                     </a>
-                    <a href="{{ route('login')}}" class="btn btn-outline-light ms-3">Login</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                            </form>
+                    @if (Auth::user() && Auth::user()->role === 'CUS')
+                        <a href="" class="btn btn-outline-warning ms-3 text-white">{{auth()->user()->name}}</a>
+                        <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger ms-3">Sign Out</a>
+                    @else
+                    <a href="{{ route('login')}}" class="btn btn-outline-warning ms-3 text-white">Login</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -120,6 +132,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+   
+    
 </body>
 
 </html>

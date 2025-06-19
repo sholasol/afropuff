@@ -118,7 +118,7 @@
                                     </h5>
                                     <div class="product-price">${{$product->regular_price}}</div>
                                     <div class="product-actions">
-                                        <button class="btn btn-orange btn-sm">Add to Cart</button>
+                                        <a href="{{ route('storeCart', $product->id)}}" class="btn btn-orange btn-sm">Add to Cart</a>
                                         <button class="btn btn-outline-light btn-sm">
                                             <i class="far fa-heart"></i>
                                         </button>
