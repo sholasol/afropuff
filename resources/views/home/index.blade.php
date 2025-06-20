@@ -63,7 +63,7 @@
                                 </h5>
                                 <span class="product-flavor">
                                     @foreach ($product->tags as $tag)
-                                        {{$tag->name.', '}}
+                                    {{$tag->name}}{{ !$loop->last ? ', ' : '' }}
                                     @endforeach
                                 </span>
                                 <div class="product-price">${{$product->regular_price}}</div>

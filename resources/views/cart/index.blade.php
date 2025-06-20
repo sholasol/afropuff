@@ -7,7 +7,7 @@
                    <h1 class="page-title">Shopping Cart</h1>
                    <nav aria-label="breadcrumb">
                        <ol class="breadcrumb">
-                           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                           <li class="breadcrumb-item"><a href="/">Home</a></li>
                            <li class="breadcrumb-item active">Cart</li>
                        </ol>
                    </nav>
@@ -25,9 +25,12 @@
                        <h4 class="mb-4">Cart Items ({{ count((array) session('cart')) }})</h4>
                        @php
                            $total = 0;
+                           $gtotal = 0;
+                           $taxRate = 0.08;
                            $subtotal = 0;
                            $qty = 0;
                            $taxRate = 0.08;
+                           $tax=0;
                            $cartItems = session('cart', []);
                        @endphp
 
@@ -38,6 +41,9 @@
                            @php
                                $total += $details['price'] * $details['quantity'];
                                $qty += $details['quantity'];
+
+                               $tax = $taxRate * $total;
+                               $gtotal = $total + $tax;
                            @endphp
                            <div data-id="{{$id}}" class="cart-item">
                                <div class="row align-items-center">
@@ -70,7 +76,7 @@
 
                        <div class="cart-actions mt-4">
                            <a href="{{route('shop')}}" class="btn btn-outline-light">Continue Shopping</a>
-                           <a href="{{ route('clearCart') }}" class="btn btn-outline-danger ms-2">Clear Cart</a>
+                           <a href="{{ route('clearCart') }}" class="btn btn-outline-danger text-white ms-2">Clear Cart</a>
                        </div>
                    </div>
                </div>
@@ -78,21 +84,26 @@
                <div class="col-lg-4">
                    <div class="order-summary">
                        <h4 class="mb-4">Order Summary</h4>
-                       <div class="summary-item">
-                           <span>Subtotal ({{ count((array) session('cart')) }} items)</span>
-                       </div>
-                       <div class="summary-item">
-                           <span>Shipping</span>
-                           <span class="text-green"> Free</span>
-                       </div>
-                       <div class="summary-item">
-                           <span>Tax </span>
-                           <span>$4.40</span>
-                       </div>
+                       <div class="summary-total">
+                            <span>Items</span>
+                            <span class="text-orange">{{ count((array) session('cart')) }}</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Quantity</span>
+                            <span class="text-orange">{{ $qty}} </span>
+                        </div>
                        <hr>
                        <div class="summary-total">
+                            <span class="fw-bold">Subtotal</span>
+                            <span class="fw-bold text-orange">${{$total}}</span>
+                        </div>
+                        <div class="summary-total">
+                            <span class="fw-bold">Tax</span>
+                            <span class="fw-bold text-orange">${{$tax}}</span>
+                        </div>
+                       <div class="summary-total">
                            <span class="fw-bold">Total</span>
-                           <span class="fw-bold text-orange">${{$total}}</span>
+                           <span class="fw-bold text-orange">${{$gtotal}}</span>
                        </div>
                        
                        <div class="promo-code mt-4">
@@ -102,9 +113,15 @@
                            </div>
                        </div>
 
-                       <a href="{{route('checkout')}}" class="btn btn-orange btn-lg w-100 mt-4">
-                           Proceed to Checkout
-                       </a>
+                       @if(session('cart'))
+                        <a href="{{route('checkout')}}" class="btn btn-orange btn-lg w-100 mt-4">
+                            Proceed to Checkout
+                        </a>
+                        @else
+                        <a href="{{route('shop')}}" class="btn btn-orange btn-lg w-100 mt-4">
+                            Add An Item
+                        </a>
+                       @endif
 
                        <div class="payment-methods mt-3">
                            <small class="text-muted">We accept:</small>

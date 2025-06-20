@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('customer_id');
+            $table->string('reference')->unique();
+            $table->decimal('amount', 10, 2);
+            $table->integer('quantity');
+            $table->string('email');
+            $table->text('shipping_address');
+            $table->string('phone');
+            $table->enum('status', ['pending', 'paid', 'failed', 'cancelled'])->default('pending');
+            $table->string('payment_reference')->nullable();
+
+            // Foreign key references
+            $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
