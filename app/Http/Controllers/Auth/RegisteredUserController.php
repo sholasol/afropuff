@@ -51,7 +51,9 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         if($user->role == 'CUS'){
-            noty()->success('Registration successful.');
+            noty()
+                ->layout('topCenter')
+                ->success('Registration successful.');
             return redirect(route('home', absolute: false));
         }else{
             return redirect(route('dashboard', absolute: false));

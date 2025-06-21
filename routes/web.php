@@ -24,7 +24,7 @@ Route::post('/cart/update/{id}', [CartController::class, 'updateCartQuantity'])-
 Route::get('/cart/remove/{id}', [CartController::class, 'deleteFromCart'])->name('deleteItem');
 Route::get('/cart/clear', [CartController::class, 'clearCart'])->name('clearCart');
 
-Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+
 
 //shop
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
@@ -37,6 +37,9 @@ Route::get('/product/{product}', [ShopController::class, 'singleProduct'])->name
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    //checkout
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //products

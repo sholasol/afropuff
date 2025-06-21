@@ -31,10 +31,14 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         if($user->role == 'CUS'){
-            noty()->success('Login successful.');
+            noty()
+                ->layout('topCenter')
+                ->success('Login successful.');
             return redirect()->intended(route('home', absolute: false));
         }else{
-            noty()->success('Login successful.');
+            noty()
+                ->layout('topCenter')
+                ->success('Login successful.');
             return redirect()->intended(route('dashboard', absolute: false));
         }
 

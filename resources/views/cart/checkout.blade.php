@@ -32,21 +32,17 @@
                         <div class="checkout-step mb-5">
                             <h4 class="step-title">Customer Information</h4>
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label for="firstName" class="form-label">Full Name *</label>
-                                    <input type="text" name="firstname" class="form-control" id="firstName" required>
+                                    <input type="text" name="firstname" class="form-control" id="firstName" value="{{$user->name}}" readonly>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="email" class="form-label">Email Address *</label>
-                                    <input type="email" name="email" class="form-control" id="email" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Password *</label>
-                                    <input type="password" name="password" class="form-control" id="password" required>
+                                    <input type="email" name="email" class="form-control" id="email" value="{{$user->email}}" readonly>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">Phone Number *</label>
-                                    <input type="tel" name="phone" class="form-control" id="phone" required>
+                                    <input type="tel" name="phone" class="form-control" id="phone" value="{{$user->phone}}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -67,14 +63,47 @@
                                     <label for="state" class="form-label">State *</label>
                                     <select class="form-select" name="state" id="state" required>
                                         <option value="">Select State</option>
-                                        <option value="CA">California</option>
-                                        <option value="NY">New York</option>
-                                        <option value="TX">Texas</option>
-                                        <option value="FL">Florida</option>
+                                        <option>ABUJA FCT</option>
+                                        <option>ABIA</option>
+                                        <option>ADAMAWA</option>
+                                        <option>AKWA IBOM</option>
+                                        <option>ANAMBRA</option>
+                                        <option>BAUCHI</option>
+                                        <option>BAYELSA</option>
+                                        <option>BENUE</option>
+                                        <option>BORNO</option>
+                                        <option>CROSS RIVER</option>
+                                        <option>DELTA</option>
+                                        <option>EBONYI</option>
+                                        <option>EDO</option>
+                                        <option>EKITI</option>
+                                        <option>ENUGU</option>
+                                        <option>GOMBE</option>
+                                        <option>IMO</option>
+                                        <option>JIGAWA</option>
+                                        <option>KADUNA</option>
+                                        <option>KANO</option>
+                                        <option>KATSINA</option>
+                                        <option>KEBBI</option>
+                                        <option>KOGI</option>
+                                        <option>KWARA</option>
+                                        <option>LAGOS</option>
+                                        <option>NASSARAWA</option>
+                                        <option>NIGER</option>
+                                        <option>OGUN</option>
+                                        <option>ONDO</option>
+                                        <option>OSUN</option>
+                                        <option>OYO</option>
+                                        <option>PLATEAU</option>
+                                        <option>RIVERS</option>
+                                        <option>SOKOTO</option>
+                                        <option>TARABA</option>
+                                        <option>YOBE</option>
+                                        <option>ZAMFARA</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="zipCode" class="form-label">ZIP Code *</label>
+                                    <label for="zipCode" class="form-label">ZIP Code </label>
                                     <input type="text" class="form-control" name="zip" id="zipCode" required>
                                 </div>
                             </div>
@@ -187,10 +216,10 @@
 
                         <!-- Order Totals -->
                         <div class="order-totals">
-                            <div class="summary-item">
+                            {{-- <div class="summary-item">
                                 <span>Shipping</span>
                                 <span class="text-green">Free</span>
-                            </div>
+                            </div> --}}
                             <hr>
                             <div class="summary-total">
                                 <span class="fw-bold">Subtotal</span>
@@ -219,6 +248,16 @@
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-undo text-green me-2"></i>
                                 <small>30-Day Money Back Guarantee</small>
+                            </div>
+                        </div>
+
+                        <div class="payment-methods mt-3">
+                            <small class="text-muted">We accept:</small>
+                            <div class="payment-icons mt-2">
+                                <i class="fab fa-cc-visa"></i>
+                                <i class="fab fa-cc-mastercard"></i>
+                                <i class="fab fa-cc-amex"></i>
+                                <i class="fab fa-cc-paypal"></i>
                             </div>
                         </div>
                     </div>

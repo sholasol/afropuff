@@ -16,12 +16,14 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->string('reference')->unique();
             $table->decimal('amount', 10, 2);
-            $table->integer('quantity');
             $table->string('email');
             $table->text('shipping_address');
-            $table->string('phone');
+            $table->string('phone')->nullable();
+            $table->string('state')->nullable();
+            $table->string('zip')->nullable();
             $table->enum('status', ['pending', 'paid', 'failed', 'cancelled'])->default('pending');
             $table->string('payment_reference')->nullable();
+            $table->string('gateway_response')->nullable();
 
             // Foreign key references
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');

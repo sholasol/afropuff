@@ -33,7 +33,9 @@ class CartController extends Controller
 
     public function checkout()
     {
-        return view('cart.checkout');
+        $user = Auth::user();
+
+        return view('cart.checkout', ['user' => $user]);
     }
 
     public function storeCart($id)
@@ -86,7 +88,9 @@ class CartController extends Controller
             }
 
             // For regular requests, return redirect
-            noty()->info('Item added successfully.');
+            noty()
+                ->layout('topCenter')
+                ->info('Item added successfully.');
             return redirect()->back();
         } catch (\Exception $e) {
             // Always return JSON for errors since AJAX requests need consistent response format
@@ -129,9 +133,6 @@ class CartController extends Controller
         return response()->json(['success' => true, 'message' => 'Quantity updated']);
     }
 
-
-
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -143,11 +144,15 @@ class CartController extends Controller
             unset($cart[$id]);
             session()->put('cart', $cart);
 
-            noty()->info('Item removed successfully.');
+            noty()
+                ->layout('topCenter')
+                ->info('Item removed successfully.');
             return redirect()->back();
         }
 
-        noty()->danger('Item not found in the cart.');
+        noty()
+            ->layout('topCenter')
+            ->danger('Item not found in the cart.');
         return redirect()->back();
     }
 
@@ -162,109 +167,12 @@ class CartController extends Controller
 
         session()->forget('cart');
 
-        noty()->info('Cart cleared successfully.');
+        noty()
+            ->layout('topCenter')
+            ->info('Cart cleared successfully.');
         return redirect()->back();
     }
 
-
-    public function redirectToGateway(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => ['required', 'string'],
-            'email' => ['required', 'string', 'email'], // Added email validation
-            'phone' => ['required', 'string'],
-        ]);
-
-        $cart = session()->get('cart', []);
-        $total = 0;
-
-        // Calculate total price from cart
-        foreach ($cart as $id => $details) {
-            $total += $details['price'] * $details['quantity'];
-        }
-
-        // Ensure cart is not empty
-        if ($total <= 0) {
-            return redirect()->back()->with('error', 'Cart is empty.');
-        }
-
-        DB::beginTransaction();
-        try {
-            // Generate user or retrieve authenticated user's email and customer_id
-            if ($validated['email']) {
-                $password = $validated['phone'];
-                $email = $validated['email'];
-
-                $random = Str::random(4);
-                $ranCode = "USR-" . $random;
-
-                $checkUser = User::where('email', $email)->first();
-
-                if ($checkUser) {
-                    $customer_id = $checkUser->id;
-                } else {
-                    $user = User::create([
-                        'name' => $validated['name'],
-                        'email' => $validated['email'],
-                        'phone' => $validated['phone'],
-                        'customer_id' => $ranCode,
-                        'password' => Hash::make($password),
-                    ]);
-                    $customer_id = $user->id;
-                }
-            } else {
-                $email = auth()->user()->email;
-                $customer_id = auth()->user()->customer_id;
-            }
-
-            session()->put('customer_id', $customer_id);
-            session()->put('ranCode', $ranCode ?? null); // Handle case where $ranCode might not be set
-
-            // Generate or retrieve cart_id
-            if (!session()->has('cart_id')) {
-                $cart_id = Str::uuid();  // Generate a unique cart ID
-                session()->put('cart_id', $cart_id);  // Store cart_id in session
-            } else {
-                $cart_id = session()->get('cart_id');  // Retrieve cart_id from session
-            }
-
-            // Payment details
-            $amount = $total;
-            $ref = strtoupper(Str::random(7));  // Generate payment reference
-
-            // Initialize Stripe Payment
-            $stripe = new \Stripe\StripeClient(config('stripe.stripe_sk')); //$stripe = new StripeClient(config('stripe.stripe_sk')); 
-
-            $response = $stripe->checkout->sessions->create([
-                'payment_method_types' => ['card'], // Specify payment methods
-                'line_items' => [
-                    [
-                        'price_data' => [
-                            'currency' => 'usd',
-                            'product_data' => ['name' => 'Order for Food'], // Corrected typo from 'Oder' to 'Order'
-                            'unit_amount' => $amount * 100, // Amount in cents
-                        ],
-                        'quantity' => 1,
-                    ],
-                ],
-                'mode' => 'payment',
-                'success_url' => route('success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('cancel'),
-            ]);
-
-            // Corrected response check: Stripe Checkout Session does not have a 'status' field
-            if ($response && $response->url) { // Check for the existence of the URL
-                DB::commit();
-                return redirect($response->url);
-            } else {
-                throw new \Exception('Unable to initiate payment. Please try again.');
-                // Removed the unreachable return statement after throw
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Oops! Operation failed: ' . $e->getMessage());
-        }
-    }
 
     /**
      * Initialize Paystack payment
@@ -274,7 +182,10 @@ class CartController extends Controller
         $request->validate([
             'email' => 'required|email',
             'shipping_address' => 'required|string',
-            'phone' => 'required|string'
+            'phone' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'zip' => 'nullable|string',
         ]);
 
         // Get cart items from session
@@ -304,11 +215,13 @@ class CartController extends Controller
 
             // Create order record
             $order = Order::create([
-                'user_id' => Auth::check() ? Auth::id() : null,
+                'customer_id' => Auth::check() ? Auth::id() : null,
                 'reference' => $reference,
                 'amount' => $totalAmount,
                 'email' => $request->email,
                 'shipping_address' => $request->shipping_address,
+                'state' => $request->state,
+                'zip' => $request->zip,
                 'phone' => $request->phone,
                 'status' => 'pending'
             ]);
@@ -356,11 +269,19 @@ class CartController extends Controller
             } else {
                 // Delete the order if payment initialization fails
                 $order->delete();
+                noty()
+                    ->layout('topCenter')
+                    ->info('error', $payment['message']);
+
                 return redirect()->route('cart')
                     ->with('error', $payment['message']);
             }
         } catch (\Exception $e) {
             Log::error('Payment initialization failed: ' . $e->getMessage());
+           
+            noty()
+                ->layout('topCenter')
+                ->info('Payment initialization failed. Try again');
             return redirect()->route('cart')
                 ->with('error', 'Payment initialization failed. Please try again.');
         }
@@ -374,6 +295,10 @@ class CartController extends Controller
         $reference = $request->reference;
 
         if (!$reference) {
+            noty()
+                ->layout('topCenter')
+                ->info('Payment Response not found.');
+
             return redirect()->route('cart')
                 ->with('error', 'Payment reference not found!');
         }
@@ -392,7 +317,7 @@ class CartController extends Controller
                         'status' => 'paid',
                         'payment_reference' => $verification['data']['reference'],
                         'gateway_response' => $verification['data']['gateway_response'],
-                        'paid_at' => now()
+                        'updated_at' => now()
                     ]);
 
                     // Clear session cart instead of database cart
@@ -405,7 +330,7 @@ class CartController extends Controller
                         ->with('success', 'Payment successful! Your order has been confirmed.')
                         ->with('order', $order);
                 } else {
-                    return redirect()->route('cart.index')
+                    return redirect()->route('cart')
                         ->with('error', 'Order not found!');
                 }
             } else {
@@ -415,12 +340,18 @@ class CartController extends Controller
                     $order->update(['status' => 'failed']);
                 }
 
+                noty()
+                    ->layout('topCenter')
+                    ->info('Payment failed.');
                 return redirect()->route('payment.failed')
                     ->with('error', 'Payment failed or was cancelled.');
             }
         } catch (\Exception $e) {
             \Log::error('Payment callback error: ' . $e->getMessage());
-            return redirect()->route('cart.index')
+            noty()
+            ->layout('topCenter')
+            ->info('Payment verification failed.');
+            return redirect()->route('cart')
                 ->with('error', 'Payment verification failed. Please contact support.');
         }
     }
@@ -430,7 +361,7 @@ class CartController extends Controller
      */
     public function paymentSuccess()
     {
-        return view('payment.success');
+        return view('home.success');
     }
 
     /**
@@ -438,6 +369,6 @@ class CartController extends Controller
      */
     public function paymentFailed()
     {
-        return view('payment.failed');
+        return view('home.failed');
     }
 }
