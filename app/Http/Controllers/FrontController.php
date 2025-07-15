@@ -12,7 +12,9 @@ class FrontController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['categories', 'tags', 'featuredImage'])->get();
+        $products = Product::with(['categories', 'tags', 'featuredImage'])
+                    ->inRandomOrder()
+                    ->paginate(9);
 
         return view('home.index', ['products' => $products]);
     }

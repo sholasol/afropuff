@@ -43,6 +43,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'customer_id' => $ranCode,
+            'role' => 'CUS',
             'password' => Hash::make($request->password),
         ]);
 
@@ -54,7 +55,7 @@ class RegisteredUserController extends Controller
             noty()
                 ->layout('topCenter')
                 ->success('Registration successful.');
-            return redirect(route('home', absolute: false));
+            return redirect(route('cart', absolute: false));
         }else{
             return redirect(route('dashboard', absolute: false));
         }

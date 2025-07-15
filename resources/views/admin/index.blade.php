@@ -11,7 +11,7 @@
                             <i class="fas fa-shopping-cart"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-number">1,234</h3>
+                            <h3 class="stat-number">{{$totalOrders}}</h3>
                             <p class="stat-label">Total Orders</p>
                             <span class="stat-change text-success">
                                 <i class="fas fa-arrow-up"></i> 12%
@@ -25,7 +25,7 @@
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-number">$45,678</h3>
+                            <h3 class="stat-number">${{$revenue}}</h3>
                             <p class="stat-label">Sales Revenue</p>
                             <span class="stat-change text-success">
                                 <i class="fas fa-arrow-up"></i> 8%
@@ -39,7 +39,7 @@
                             <i class="fas fa-box"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-number">156</h3>
+                        <h3 class="stat-number">{{$products}}</h3>
                             <p class="stat-label">Products</p>
                             <span class="stat-change text-warning">
                                 <i class="fas fa-exclamation-triangle"></i> 12 Low Stock
@@ -53,7 +53,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 class="stat-number">2,456</h3>
+                            <h3 class="stat-number">{{$customers}}</h3>
                             <p class="stat-label">Customers</p>
                             <span class="stat-change text-success">
                                 <i class="fas fa-arrow-up"></i> 15%
@@ -133,7 +133,7 @@
                     <div class="dashboard-card">
                         <div class="card-header">
                             <h5 class="card-title">Recent Orders</h5>
-                            <a href="orders.html" class="btn btn-outline-light btn-sm">View All</a>
+                            <a href="{{route('orders')}}" class="btn btn-outline-light btn-sm">View All</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -142,7 +142,7 @@
                                         <tr>
                                             <th>Order ID</th>
                                             <th>Customer</th>
-                                            <th>Products</th>
+                                            <th>Items</th>
                                             <th>Total</th>
                                             <th>Status</th>
                                             <th>Date</th>
@@ -150,39 +150,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($orders as $key => $order )
                                         <tr>
-                                            <td>#ORD-001</td>
-                                            <td>John Doe</td>
-                                            <td>Dark Menthol, Mixed Fruits</td>
-                                            <td>$27.98</td>
-                                            <td><span class="badge bg-success">Completed</span></td>
-                                            <td>2024-01-15</td>
+                                            <td>#ORD-00{{$key + 1}}</td>
+                                            <td>{{ $order->customer->name ?? 'Guest' }}</td>
+                                            <td>{{ $order->orderItems->count() }}</td>
+                                            <td>${{$order->amount}}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-outline-light">View</button>
+                                                @php
+                                                    $badgeClass = [
+                                                        'pending' => 'bg-warning',
+                                                        'paid' => 'bg-success',
+                                                        'cancelled' => 'bg-danger',
+                                                        'failed' => 'bg-info',
+                                                    ][$order->status] ?? 'bg-secondary';
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }}">{{ ucfirst($order->status) }}</span>
+                                            </td>
+                                            <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                                            <td>
+                                                <a href="" class="btn btn-sm btn-outline-light">View</a>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>#ORD-002</td>
-                                            <td>Jane Smith</td>
-                                            <td>Blushed Mango</td>
-                                            <td>$13.99</td>
-                                            <td><span class="badge bg-warning">Processing</span></td>
-                                            <td>2024-01-15</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-light">View</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-003</td>
-                                            <td>Mike Johnson</td>
-                                            <td>Vanilla Dream, Berry Blast</td>
-                                            <td>$32.98</td>
-                                            <td><span class="badge bg-info">Shipped</span></td>
-                                            <td>2024-01-14</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-light">View</button>
-                                            </td>
-                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

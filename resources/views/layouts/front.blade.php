@@ -55,7 +55,7 @@
                                 @csrf
                             </form>
                     @if (Auth::user() && Auth::user()->role === 'CUS')
-                        <a href="" class="btn btn-outline-warning ms-3 text-white">{{auth()->user()->name}}</a>
+                        <a href="{{route('customer.dashboard')}}" class="btn btn-outline-warning ms-3 text-white">{{auth()->user()->name}}</a>
                         <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn btn-danger ms-3">Sign Out</a>
                     @else
                     <a href="{{ route('login')}}" class="btn btn-outline-warning ms-3 text-white">Login</a>

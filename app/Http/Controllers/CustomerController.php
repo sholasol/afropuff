@@ -2,64 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function dashboard()
     {
-        //
+        $user = Auth::user();
+        $recentOrders = Order::where('customer_id', $user->id)
+                            ->orderBy('created_at', 'desc')
+                            ->take(3)
+                            ->get();
+
+        return view('customer.dashboard', [
+            'user' => $user,
+            'recentOrders' => $recentOrders
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function orders()
     {
-        //
+        $user = Auth::user();
+        $orders = Order::where('customer_id', $user->id)
+                      ->orderBy('created_at', 'desc')
+                      ->paginate(10);
+
+        return view('customer.orders', [
+            'user' => $user,
+            'orders' => $orders
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function orderDetails(Order $order)
     {
-        //
-    }
+        if ($order->customer_id !== Auth::id()) {
+            abort(403);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Customer $customer)
-    {
-        //
-    }
+        // $order->load('items.product');
+        $order->load('orderItems.product');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Customer $customer)
-    {
-        //
+        return view('customer.order-details', [
+            'user' => Auth::user(),
+            'order' => $order
+        ]);
     }
 }

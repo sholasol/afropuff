@@ -1,15 +1,16 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\TagController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', [FrontController::class, 'index'])->name('home');
 Route::get('/about', [FrontController::class, 'about'])->name('about');
@@ -39,8 +40,26 @@ Route::get('/product/{product}', [ShopController::class, 'singleProduct'])->name
 Route::middleware('auth')->group(function () {
     //checkout
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    // Route::get('/checkout/success', [CartController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/checkout/failed', [CartController::class, 'paymentFailed'])->name('payment.failed');
+    Route::post('/payment/initialize', [CartController::class, 'initializePayment'])->name('payment.initialize');
+
+    Route::get('/checkout/success', [CartController::class, 'paymentSuccess'])->name('payment.success');
+
+    Route::get('/payment/callback', [CartController::class, 'handlePaymentCallback'])->name('payment.callback');
+
+    // Receipt route (optional - for direct access to receipts)
+    Route::get('/receipt/{reference}', [CartController::class, 'showReceipt'])->name('receipt.show');
+   
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/customers', [DashboardController::class, 'customers'])->name('customers');
+
+
+    // Customer dashboard
+    Route::get('/my-account', [CustomerController::class, 'dashboard'])->name('customer.dashboard');
+    Route::get('/my-account/orders', [CustomerController::class, 'orders'])->name('customer.orders');
+    Route::get('/my-account/orders/{order}', [CustomerController::class, 'orderDetails'])->name('customer.order.details');
 
     //products
     Route::get('/products', [ProductController::class, 'index'])->name('products');
@@ -68,6 +87,13 @@ Route::middleware('auth')->group(function () {
 
     //order
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+
+    Route::get('/order/show', [OrderController::class, 'show'])->name('orders.show');
+
+    Route::get('/{order}/fulfill-modal', [OrderController::class, 'fulfillModal'])->name('orders.fulfill-modal');
+    Route::get('/orders/{order}/fulfill-modal', [OrderController::class, 'fulfillModal'])->name('orders.fulfill-modal');
+    Route::put('/{order}/fulfill', [OrderController::class, 'fulfill'])->name('orders.fulfill');
+    Route::put('/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

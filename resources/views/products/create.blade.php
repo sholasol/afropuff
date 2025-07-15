@@ -180,7 +180,7 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="sale_start" class="form-label">Sale Start Date</label>
                                         <input type="date" class="form-control @error('sale_start') is-invalid @enderror" 
-                                               id="sale_start" name="sale_start" value="{{ old('sale_start') }}">
+                                               id="sale_start" min="{{ \Carbon\Carbon::today()->toDateString() }}" name="sale_start" value="{{ old('sale_start') }}">
                                         @error('sale_start')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -188,7 +188,7 @@
                                     <div class="col-md-6 mb-3">
                                         <label for="sale_end" class="form-label">Sale End Date</label>
                                         <input type="date" class="form-control @error('sale_end') is-invalid @enderror" 
-                                               id="sale_end" name="sale_end" value="{{ old('sale_end') }}">
+                                               id="sale_end" min="{{ \Carbon\Carbon::today()->toDateString() }}" name="sale_end" value="{{ old('sale_end') }}">
                                         @error('sale_end')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -342,7 +342,7 @@
                                 <div class="mb-3">
                                     <label for="publish_date" class="form-label">Publish Date</label>
                                     <input type="datetime-local" class="form-control @error('publish_date') is-invalid @enderror" 
-                                           id="publish_date" name="publish_date" value="{{ old('publish_date') }}">
+                                           id="publish_date" min="{{ \Carbon\Carbon::today()->toDateString() }}" name="publish_date" value="{{ old('publish_date') }}">
                                     @error('publish_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

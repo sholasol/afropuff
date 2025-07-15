@@ -648,3 +648,43 @@ h6 {
 .security-features .fas {
   width: 20px;
 }
+
+
+/* Add these styles to match the checkout page */
+.bg-orange {
+  background-color: #fd7e14;
+}
+
+.btn-orange {
+  background-color: #fd7e14;
+  color: white;
+  border-color: #fd7e14;
+}
+
+.btn-orange:hover {
+  background-color: #e67312;
+  border-color: #e67312;
+  color: white;
+}
+
+.btn-outline-orange {
+  color: #fd7e14;
+  border-color: #fd7e14;
+}
+
+.btn-outline-orange:hover {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+.badge.bg-danger {
+  background-color: #dc3545 !important;
+}

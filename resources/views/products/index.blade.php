@@ -9,9 +9,9 @@
                         <a href="{{route('addProduct')}}" class="btn btn-primary">
                             <i class="fas fa-plus me-2"></i>Add New Product
                         </a>
-                        <button class="btn btn-outline-light ms-2" id="bulkDeleteBtn" disabled>
+                        {{-- <button class="btn btn-outline-light ms-2" id="bulkDeleteBtn" disabled>
                             <i class="fas fa-trash me-2"></i>Delete Selected
-                        </button>
+                        </button> --}}
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex">
@@ -22,7 +22,7 @@
                                 </button>
                             </div>
                             <button class="btn btn-outline-light ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#filterOptions">
-                                <i class="fas fa-filter"></i>
+                                <i class="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                                 <td>{{$product->sku}}</td>
                                 <td>
                                     @foreach ($product->categories as $cat)
-                                    {{$cat->name}},
+                                    {{ $cat->name }}{{ !$loop->last ? ', ' : '' }}
                                     @endforeach
                                 </td>
                                 <td>${{$product->regular_price}}</td>
@@ -131,7 +131,7 @@
                                         <a href="{{ route('deleteProduct', $product->id) }}" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this product?')">
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                        <a href="{{route('productGallery', $product->id)}}" class="btn btn-sm btn-outline-light" title="View" target="_blank">
+                                        <a href="{{route('singleProduct', $product->id)}}" class="btn btn-sm btn-outline-light" title="View" target="_blank">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </div>

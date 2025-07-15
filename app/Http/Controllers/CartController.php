@@ -179,6 +179,8 @@ class CartController extends Controller
      */
     public function initializePayment(Request $request)
     {
+        // dd($request->all());
+
         $request->validate([
             'email' => 'required|email',
             'shipping_address' => 'required|string',
@@ -225,6 +227,13 @@ class CartController extends Controller
                 'phone' => $request->phone,
                 'status' => 'pending'
             ]);
+
+            $user = Auth::user();
+            if (!$user->phone) {
+                $user->update([
+                    'phone' => $request->phone
+                ]);
+            }
 
             // Create order items from session cart
             foreach ($cart as $cartKey => $item) {
@@ -278,7 +287,7 @@ class CartController extends Controller
             }
         } catch (\Exception $e) {
             Log::error('Payment initialization failed: ' . $e->getMessage());
-           
+
             noty()
                 ->layout('topCenter')
                 ->info('Payment initialization failed. Try again');
@@ -330,8 +339,17 @@ class CartController extends Controller
                         ->with('success', 'Payment successful! Your order has been confirmed.')
                         ->with('order', $order);
                 } else {
-                    return redirect()->route('cart')
-                        ->with('error', 'Order not found!');
+                     // Payment failed
+                    $order = Order::where('reference', $reference)->first();
+                    if ($order) {
+                        $order->update(['status' => 'failed']);
+                    }
+
+                noty()
+                    ->layout('topCenter')
+                    ->info('Payment failed.');
+                return redirect()->route('home.failed')
+                    ->with('error', 'Payment failed or was cancelled.');
                 }
             } else {
                 // Payment failed
@@ -356,13 +374,150 @@ class CartController extends Controller
         }
     }
 
+    // /**
+    //  * Payment success page
+    //  */
+    // public function paymentSuccess()
+    // {
+    //     return view('home.success');
+    // }
+
+
+    // public function handlePaymentCallback(Request $request)
+    // {
+    //     $reference = $request->reference;
+
+    //     if (!$reference) {
+    //         noty()
+    //             ->layout('topCenter')
+    //             ->info('Payment Response not found.');
+
+    //         return redirect()->route('cart')
+    //             ->with('error', 'Payment reference not found!');
+    //     }
+
+    //     try {
+    //         // Verify payment
+    //         $verification = $this->paystackService->verifyPayment($reference);
+
+    //         if ($verification['status'] && $verification['data']['status'] === 'success') {
+    //             // Payment successful
+    //             $order = Order::with(['orderItems.product'])->where('reference', $reference)->first();
+
+    //             if ($order) {
+    //                 // Update order status
+    //                 $order->update([
+    //                     'status' => 'paid',
+    //                     'payment_reference' => $verification['data']['reference'],
+    //                     'gateway_response' => $verification['data']['gateway_response'],
+    //                     'updated_at' => now()
+    //                 ]);
+
+    //                 // Clear session cart instead of database cart
+    //                 session()->forget('cart');
+
+    //                 // Also clear cart token if it exists
+    //                 session()->forget('cart_token');
+
+    //                 return redirect()->route('payment.success')
+    //                     ->with('success', 'Payment successful! Your order has been confirmed.')
+    //                     ->with('order', $order);
+    //             } else {
+    //                 return redirect()->route('cart')
+    //                     ->with('error', 'Order not found!');
+    //             }
+    //         } else {
+    //             // Payment failed
+    //             $order = Order::where('reference', $reference)->first();
+    //             if ($order) {
+    //                 $order->update(['status' => 'failed']);
+    //             }
+
+    //             noty()
+    //                 ->layout('topCenter')
+    //                 ->info('Payment failed.');
+    //             return redirect()->route('payment.failed')
+    //                 ->with('error', 'Payment failed or was cancelled.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Payment callback error: ' . $e->getMessage());
+    //         noty()
+    //             ->layout('topCenter')
+    //             ->info('Payment verification failed.');
+    //         return redirect()->route('cart')
+    //             ->with('error', 'Payment verification failed. Please contact support.');
+    //     }
+    // }
+
     /**
      * Payment success page
      */
     public function paymentSuccess()
     {
-        return view('home.success');
+        $order = session('order');
+
+        if (!$order) {
+            return redirect()->route('cart')->with('error', 'No order found.');
+        }
+
+        return view('cart.receipt', compact('order'));
     }
+
+    /**
+     * Show receipt for a specific order (optional - for direct access)
+     */
+    public function showReceipt($reference)
+    {
+        $order = Order::with(['orderItems.product'])
+            ->where('reference', $reference)
+            ->where('customer_id', Auth::id()) // Ensure user can only see their own orders
+            ->firstOrFail();
+
+        return view('cart.receipt', compact('order'));
+    }
+
+
+     /**
+     * Verify payment status (for webhook)
+     */
+    public function verifyPayment(Request $request)
+    {
+        $reference = $request->reference;
+        
+        try {
+            $payment = Paystack::getPaymentData();
+            
+            if ($payment['status']) {
+                $order = Order::where('reference', $reference)->first();
+                
+                if ($order && $payment['data']['status'] === 'success') {
+                    $order->update([
+                        'status' => 'paid',
+                        'payment_reference' => $payment['data']['reference'],
+                        'paid_at' => now()
+                    ]);
+                    
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Payment verified successfully'
+                    ]);
+                }
+            }
+            
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Payment verification failed'
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Payment verification error: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Payment verification error'
+            ], 500);
+        }
+    }
+
 
     /**
      * Payment failed page
@@ -371,4 +526,7 @@ class CartController extends Controller
     {
         return view('home.failed');
     }
+
+
+
 }
